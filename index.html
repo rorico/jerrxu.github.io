@@ -4,17 +4,45 @@
 
 <div class="container">
   <div>
-    <iframe width="560" height="315" src="https://www.youtube.com/embed/5Jq06Ga71TM" frameborder="0" allowfullscreen></iframe>
   </div>
-  <p> Unix time:</p>
   <p id="p1">Loading</p>
+  seconds since I've worked on this page.
 </div>
 
 <script>
-var n; 
+var last = 1478653690; 			//last time i've work on this
+var diff;
+var s = m = h = d = w = 0;		// seconds, minutes, hours, days, weeks
+var str = "zeroes: ";
+
+
 function myFunction() {
-    var d = new Date().getTime().toString().substr(0, 10);
-	document.getElementById("p1").innerHTML = d;
+    /*diff = (new Date().getTime().toString().substr(0, 10)) - n;
+	if ( diff < 60){
+		
+	}
+	
+	
+	//bad way
+	/*while(diff > 604800){
+		w++;
+		diff -= 604800;
+	}
+	while(diff > 86400){
+		d++;
+		diff -= 86400;
+	}
+	while(diff > 3600){
+		h++;
+		diff -= 3600;
+	}
+	while(diff > 60){
+		m++;
+		diff -= 60;
+	}
+	while()*/
+	
+	document.getElementById("p1").innerHTML = str + s + m + h + d + w;
 }
 
 var t=setInterval(myFunction,1000);
