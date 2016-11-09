@@ -5,48 +5,103 @@
 <div class="container">
   <div>
   </div>
-  <p id="p1">Loading</p>
-  seconds since I've worked on this page.
+  It has been <text id="p1">Loading</text> since I've worked on this.
 </div>
 
+
 <script>
-var last = 1478653690; 			//last time i've work on this
-var diff;
+var last = 1478650000;
+var current;
 var s = m = h = d = w = 0;		// seconds, minutes, hours, days, weeks
-var str = "zeroes: ";
+var str = "";
+var you;
+var me;
 
+startup();
 
-function myFunction() {
-    /*diff = (new Date().getTime().toString().substr(0, 10)) - n;
-	if ( diff < 60){
-		
-	}
-	
-	
-	//bad way
-	/*while(diff > 604800){
+function startup(){
+	var t = new Date().getTime().toString().substr(0, 10) - last;
+	while(t >= 604800){
+		t -= 604800;
 		w++;
-		diff -= 604800;
 	}
-	while(diff > 86400){
+	while(t >= 86400){
+		t -= 86400;
 		d++;
-		diff -= 86400;
 	}
-	while(diff > 3600){
+	while(t >= 3600){
+		t -= 3600;
 		h++;
-		diff -= 3600;
 	}
-	while(diff > 60){
+	while(t > 60){
+		t -= 60;
 		m++;
-		diff -= 60;
 	}
-	while()*/
-	
-	document.getElementById("p1").innerHTML = str + s + m + h + d + w;
+	s = t;
+	you=setInterval(count,1000);
+	me=setInterval(incS, 1000)
 }
 
-var t=setInterval(myFunction,1000);
+function count() {
+	if ( s > 59 ){
+		s = 0;
+		m++;
+		str = "";
+		if ( m == 60 ){
+			m = 0;
+			h++;
+			if ( h == 24 ){
+				h = 0;
+				d++;
+				if ( d == 7 ){
+					d = 0;
+					w++;
+				}
+			}
+		}
+	}
+	
+	if ( s == 1 ){
+		str = s + " second";
+	}
+	else if ( s > 1 ){
+		str = s + " seconds";
+	}
+	
+	if ( m == 1 ){
+		str = m + " minute    " + str;
+	}
+	else if ( m > 1 ){
+		str = m + " minutes    " + str;
+	}
+	
+	if ( h == 1 ){
+		str = h + " hour  " + str;
+	}
+	else if ( h > 1 ){
+		str = h + " hours  " + str;
+	}
+	
+	if ( d == 1 ){
+		str = d + " day  " + str;
+	}
+	else if ( d > 1 ){
+		str = d + " days  " + str;
+	}
+	
+	if ( w == 1 ){
+		str = w + " week  " + str;
+	}
+	else if ( w > 1 ){
+		str = w + " weeks  " + str;
+	}
+	
+	document.getElementById("p1").innerHTML = str;
+}
 
+function incS(){
+	s++;
+}
 </script>
 
 </body>
