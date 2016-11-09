@@ -5,12 +5,11 @@
 <div class="container">
   <div>
   </div>
-  It has been <text id="p1">Loading</text> since I've worked on this.
+  It's been <text id="p1">time</text> since I worked on this.
 </div>
 
-
 <script>
-var last = 1478650000;
+var last = 1478663115 ;
 var current;
 var s = m = h = d = w = 0;		// seconds, minutes, hours, days, weeks
 var str = "";
@@ -62,41 +61,26 @@ function count() {
 	}
 	
 	if ( s == 1 ){
-		str = s + " second";
+		str = "and " + s + " second";
 	}
 	else if ( s > 1 ){
-		str = s + " seconds";
+		str = "and " + s + " seconds";
 	}
 	
-	if ( m == 1 ){
-		str = m + " minute    " + str;
-	}
-	else if ( m > 1 ){
-		str = m + " minutes    " + str;
-	}
-	
-	if ( h == 1 ){
-		str = h + " hour  " + str;
-	}
-	else if ( h > 1 ){
-		str = h + " hours  " + str;
-	}
-	
-	if ( d == 1 ){
-		str = d + " day  " + str;
-	}
-	else if ( d > 1 ){
-		str = d + " days  " + str;
-	}
-	
-	if ( w == 1 ){
-		str = w + " week  " + str;
-	}
-	else if ( w > 1 ){
-		str = w + " weeks  " + str;
-	}
-	
+	checkAndConc(m, " minute");
+	checkAndConc(h, " hour");
+	checkAndConc(d, " day");
+	checkAndConc(w, " week");
 	document.getElementById("p1").innerHTML = str;
+}
+
+function checkAndConc(time, string){
+	if ( time == 1 ){
+		str = time + string + " " + str;
+	}
+	else if ( time > 1 ){
+		str = time + string + "s " + str;
+	}
 }
 
 function incS(){
