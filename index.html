@@ -14,10 +14,8 @@ var current;
 var s = m = h = d = w = 0;		// seconds, minutes, hours, days, weeks
 var str = "";
 var you;
-var me;
 
 startup();
-
 function startup(){
 	var t = new Date().getTime().toString().substr(0, 10) - last;
 	while(t >= 604800){
@@ -32,17 +30,17 @@ function startup(){
 		t -= 3600;
 		h++;
 	}
-	while(t > 60){
+	while(t >= 60){
 		t -= 60;
 		m++;
 	}
 	s = t;
 	you=setInterval(count,1000);
-	me=setInterval(incS, 1000)
 }
 
 function count() {
-	if ( s > 59 ){
+	s++;
+	if ( s >= 60 ){
 		s = 0;
 		m++;
 		str = "";
@@ -81,10 +79,6 @@ function checkAndConc(time, string){
 	else if ( time > 1 ){
 		str = time + string + "s " + str;
 	}
-}
-
-function incS(){
-	s++;
 }
 </script>
 
