@@ -3,14 +3,11 @@
 <body>
 
 <div class="container">
-  <div>
-  </div>
-  It's been <text id="p1">time</text> since I worked on this.
+  <text id="pre"></text><text id="p1">time</text><text id="suf"></text>
 </div>
 
 <script>
-var last = 1478663115 ;
-var current;
+var last = 1478663115;
 var s = m = h = d = w = 0;		// seconds, minutes, hours, days, weeks
 var str = "";
 var you;
@@ -35,6 +32,9 @@ function startup(){
 		m++;
 	}
 	s = t;
+	document.getElementById("pre").innerHTML = "It's been ";
+	count();
+	document.getElementById("suf").innerHTML = " since I worked on this :(";
 	you=setInterval(count,1000);
 }
 
@@ -69,7 +69,7 @@ function count() {
 	checkAndConc(h, " hour");
 	checkAndConc(d, " day");
 	checkAndConc(w, " week");
-	document.getElementById("p1").innerHTML = str;
+	document.getElementById("p1").innerHTML = str;	
 }
 
 function checkAndConc(time, string){
