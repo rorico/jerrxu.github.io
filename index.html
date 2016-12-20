@@ -1,86 +1,123 @@
 <!DOCTYPE html>
 <html>
-<body>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<link href="css/style.css" rel="stylesheet">
+</head>
 
-<div class="container">
-  <text id="pre"></text><text id="p1">time</text><text id="suf"></text>
+
+<body>
+<header>
+   <h1>Jerry Xu</h1>
+</header>
+
+<div class="parent">
+	<div class="column1">
+	</div>
+	<div class="column5">
+		<h2>What I Do:</h2>
+		<text>Inspired by <a href="http://uni.xkcd.com/">uni.xkcd.com</a></text><br>
+		<text id="list"></text>
+		<label>guest@jerrxu:/$ </label>
+		<input id="textbox" type="text" size="50" />
+		
+	</div>
 </div>
 
+<br>
+<div class="parent">
+	<div class="column1">
+	</div>
+	<div class="column8">
+		<text>It's been </text><text id="p1"></text><text> since I worked on this :(</text>
+	</div>
+	<div class="column1">
+	</div>
+</div>
+
+
+
 <script>
-var last = 1478663115;
-var s = m = h = d = w = 0;		// seconds, minutes, hours, days, weeks
-var str = "";
-var you;
 
-startup();
-function startup(){
-	var t = new Date().getTime().toString().substr(0, 10) - last;
-	while(t >= 604800){
-		t -= 604800;
-		w++;
-	}
-	while(t >= 86400){
-		t -= 86400;
-		d++;
-	}
-	while(t >= 3600){
-		t -= 3600;
-		h++;
-	}
-	while(t >= 60){
-		t -= 60;
-		m++;
-	}
-	s = t;
-	document.getElementById("pre").innerHTML = "It's been ";
-	count();
-	document.getElementById("suf").innerHTML = " since I worked on this :(";
-	you=setInterval(count,1000);
-}
+$(document).ready(function(){
+	var last = 1482255662;			// alert("done");
+	var s = m = h = d = w = 0;		// seconds, minutes, hours, days, weeks
+	var str;
 
-function count() {
-	s++;
-	if ( s >= 60 ){
-		s = 0;
-		m++;
-		str = "";
-		if ( m == 60 ){
-			m = 0;
-			h++;
-			if ( h == 24 ){
-				h = 0;
-				d++;
-				if ( d == 7 ){
-					d = 0;
-					w++;
+	$(startup());
+	function startup(){
+		var t = new Date().getTime().toString().substr(0, 10) - last;
+		w = Math.floor(t/604800);
+		t = t%604800;
+		d = Math.floor(t/86400);
+		t = t%86400;
+		h = Math.floor(t/3600);
+		t = t%3600;
+		m = Math.floor(t/60);
+		t = t%60;
+		s = t;
+		count();
+		last=setInterval(count,1000);
+	}
+
+	function count() {
+		s++;
+		if ( s >= 60 ){
+			s = 0;
+			m++;
+			if ( m == 60 ){
+				m = 0;
+				h++;
+				if ( h == 24 ){
+					h = 0;
+					d++;
+					if ( d == 7 ){
+						d = 0;
+						w++;
+					}
 				}
 			}
 		}
+		str = "";
+		checkAndConc(s, " second");
+		if(s!=0){
+			str = " and " + str;
+		}
+		checkAndConc(m, " minute");
+		checkAndConc(h, " hour");
+		checkAndConc(d, " day");
+		checkAndConc(w, " week");
+		document.getElementById("p1").innerHTML = str;	
 	}
-	
-	if ( s == 1 ){
-		str = "and " + s + " second";
-	}
-	else if ( s > 1 ){
-		str = "and " + s + " seconds";
-	}
-	
-	checkAndConc(m, " minute");
-	checkAndConc(h, " hour");
-	checkAndConc(d, " day");
-	checkAndConc(w, " week");
-	document.getElementById("p1").innerHTML = str;	
-}
 
-function checkAndConc(time, string){
-	if ( time == 1 ){
-		str = time + string + " " + str;
+	function checkAndConc(t, string){
+		if ( t == 1 ){
+			str = t + string + " " + str;
+		} else if ( t > 1 ){
+			str = t + string + "s " + str;
+		}
 	}
-	else if ( time > 1 ){
-		str = time + string + "s " + str;
-	}
-}
+	
+	$('#textbox').focus();
+	$('#textbox').keypress(function(event){
+		var keycode = (event.keyCode ? event.keyCode : event.which);
+		if(keycode == '13'){
+			//alert('You pressed a "enter" key in textbox');
+			var ent = $("#textbox").val();
+			$("#list").append("guest@jerrxu:/$ " + ent + "<br>");
+			
+			switch(ent){
+				case "cat":
+				$("#list").append("You're a kitty!<br>");
+			}
+			
+			
+			$("#textbox").val("");		// clears textbox
+			$("html, body").animate({ scrollTop: $(document).height() }, "slow");
+		}
+		event.stopPropagation();
+	});
+});
 </script>
-
 </body>
 </html>
