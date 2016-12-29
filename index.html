@@ -14,36 +14,28 @@
 <div class="parent">
 	<div class="column1">
 	</div>
-	<div class="column5">
+	<div class="column9">
 		<h2>What I Do:</h2>
 		<text>Inspired by <a href="http://uni.xkcd.com/">uni.xkcd.com</a></text><br>
-		<text id="list"></text>
-		<label>guest@jerrxu:/$ </label>
-		<input id="textbox" type="text" size="50" />
+		<div id="ha">
+			<text id="list"></text>
+			<label>guest@jerrxu:/$ </label>
+			<input id="textbox" type="text" size=50/>
+		</div>
 		
 	</div>
 </div>
 
-<br>
-<div class="parent">
-	<div class="column1">
-	</div>
-	<div class="column8">
-		<text>It's been </text><text id="p1"></text><text> since I worked on this :(</text>
-	</div>
-	<div class="column1">
-	</div>
-</div>
-
-
+<footer>
+	<text>It's been </text><text id="p1"></text><text> since I worked on this :(</text>
+</footer>
 
 <script>
+var last = 1482255662;			// alert("done");
+var s = m = h = d = w = 0;		// seconds, minutes, hours, days, weeks
+var str;
 
 $(document).ready(function(){
-	var last = 1482255662;			// alert("done");
-	var s = m = h = d = w = 0;		// seconds, minutes, hours, days, weeks
-	var str;
-
 	$(startup());
 	function startup(){
 		var t = new Date().getTime().toString().substr(0, 10) - last;
@@ -58,6 +50,7 @@ $(document).ready(function(){
 		s = t;
 		count();
 		last=setInterval(count,1000);
+		$('#textbox').focus();
 	}
 
 	function count() {
@@ -98,7 +91,7 @@ $(document).ready(function(){
 		}
 	}
 	
-	$('#textbox').focus();
+	
 	$('#textbox').keypress(function(event){
 		var keycode = (event.keyCode ? event.keyCode : event.which);
 		if(keycode == '13'){
@@ -107,13 +100,26 @@ $(document).ready(function(){
 			$("#list").append("guest@jerrxu:/$ " + ent + "<br>");
 			
 			switch(ent){
+				default:	//invalid command
+					$("#list").append('Unrecognized command. Type "help" for assistance.<br>');
+					break;
+				case "":	//empty command
+					break;
+				//non-empty, valid commands
 				case "cat":
-				$("#list").append("You're a kitty!<br>");
+					$("#list").append("You're a kitty!<br>");
+					break;
+				case "dog":
+					$("#list").append("Arf!<br>");
+					break;
+				case "resume":
+				case "help":
+					$("#list").append("Sorry I'm working on that.<br>");				
 			}
-			
 			
 			$("#textbox").val("");		// clears textbox
 			$("html, body").animate({ scrollTop: $(document).height() }, "slow");
+			$('#textbox').focus();
 		}
 		event.stopPropagation();
 	});
