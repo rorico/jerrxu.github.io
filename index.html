@@ -8,30 +8,25 @@
 
 <body>
 <header>
-   <h1>Jerry Xu</h1>
+   <h2>Jerry Xu</h2>
 </header>
 
-<div class="parent">
-	<div class="column1">
-	</div>
-	<div class="column9">
-		<h2>What I Do:</h2>
-		<text>Inspired by <a href="http://uni.xkcd.com/">uni.xkcd.com</a></text><br>
-		<div id="ha">
-			<text id="list"></text>
-			<label>guest@jerrxu:/$ </label>
-			<input id="textbox" type="text" size=50/>
-		</div>
-		
+<div class="parent" id="main">
+	<text>Inspired by <a href="http://uni.xkcd.com/">uni.xkcd.com</a></text>
+	<div id="form">
+		<text id="list"></text>
+		<span>
+			<label id="label">guest@jerrxu:/$ </label><input id="input" type="text" size="50"></input>
+		</span>
 	</div>
 </div>
 
 <footer>
-	<text>It's been </text><text id="p1"></text><text> since I worked on this :(</text>
+	<text>It's been </text><text id="p1"></text><text> since I worked on this</text>
 </footer>
 
 <script>
-var last = 1482255662;			// alert("done");
+var last = 1484515493;			// alert("done");
 var s = m = h = d = w = 0;		// seconds, minutes, hours, days, weeks
 var str;
 
@@ -46,31 +41,19 @@ $(document).ready(function(){
 		h = Math.floor(t/3600);
 		t = t%3600;
 		m = Math.floor(t/60);
-		t = t%60;
-		s = t;
+		s = t = t%60;
 		count();
 		last=setInterval(count,1000);
-		$('#textbox').focus();
+		$('#input').focus();
 	}
 
 	function count() {
 		s++;
-		if ( s >= 60 ){
-			s = 0;
-			m++;
-			if ( m == 60 ){
-				m = 0;
-				h++;
-				if ( h == 24 ){
-					h = 0;
-					d++;
-					if ( d == 7 ){
-						d = 0;
-						w++;
-					}
-				}
-			}
-		}
+		if ( s >= 60 ){ s = 0; m++;
+			if ( m == 60 ){ m = 0; h++;
+				if ( h == 24 ){ h = 0; d++;
+					if ( d == 7 ){ d = 0; w++;
+		}}}}
 		str = "";
 		checkAndConc(s, " second");
 		if(s!=0){
@@ -91,12 +74,11 @@ $(document).ready(function(){
 		}
 	}
 	
-	
-	$('#textbox').keypress(function(event){
+	$('#input').keypress(function(event){
 		var keycode = (event.keyCode ? event.keyCode : event.which);
 		if(keycode == '13'){
 			//alert('You pressed a "enter" key in textbox');
-			var ent = $("#textbox").val();
+			var ent = $("#input").val();
 			$("#list").append("guest@jerrxu:/$ " + ent + "<br>");
 			
 			switch(ent){
@@ -109,17 +91,18 @@ $(document).ready(function(){
 				case "cat":
 					$("#list").append("You're a kitty!<br>");
 					break;
-				case "dog":
-					$("#list").append("Arf!<br>");
-					break;
 				case "resume":
+					$("#list").append('Please click <a href="resume.docx">here</a> to see my resume.<br>');
+					break;
 				case "help":
-					$("#list").append("Sorry I'm working on that.<br>");				
+				case "pizza":
+				case "piazza":
+					$("#list").append("Sry I'm working on that.<br>");
 			}
 			
-			$("#textbox").val("");		// clears textbox
+			$("#input").val("");		// clears textbox
 			$("html, body").animate({ scrollTop: $(document).height() }, "slow");
-			$('#textbox').focus();
+			$('#input').focus();
 		}
 		event.stopPropagation();
 	});
