@@ -74,32 +74,43 @@ $(document).ready(function(){
 		}
 	}
 	
+	function printHelp(){
+		
+	}
+
 	$('#input').keypress(function(event){
 		var keycode = (event.keyCode ? event.keyCode : event.which);
 		if(keycode == '13'){
-			//alert('You pressed a "enter" key in textbox');
 			var ent = $("#input").val();
 			$("#list").append("guest@jerrxu:/$ " + ent + "<br>");
 			
 			switch(ent){
-				default:	//invalid command
-					$("#list").append('Unrecognized command. Type "help" for assistance.<br>');
+				case "": // empty command, newline 
 					break;
-				case "":	//empty command
-					break;
-				//non-empty, valid commands
 				case "cat":
-					$("#list").append("You're a kitty!<br>");
+					$("#list").append("You're a kitty!");
 					break;
 				case "resume":
-					$("#list").append('Please click <a href="resume.docx">here</a> to see my resume.<br>');
+					$("#list").append('Please click <a href="resume.docx">here</a> to see my resume.');
 					break;
 				case "help":
+					printHelp();
+					break;
+				case "pwd":
+					$("#list").append("jerrxu/Users/guest");
+					break;
 				case "pizza":
 				case "piazza":
-					$("#list").append("Sry I'm working on that.<br>");
+					$("#list").append("Sry I'm working on that.");
+					break;
+				default:	//invalid command
+					$("#list").append('Unrecognized command. Type "help" for assistance.');
 			}
 			
+			if(ent != ""){
+				$("#list").append('<br>');
+			}
+
 			$("#input").val("");		// clears textbox
 			$("html, body").animate({ scrollTop: $(document).height() }, "slow");
 			$('#input').focus();
