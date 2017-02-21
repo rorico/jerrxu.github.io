@@ -8,11 +8,11 @@
 
 <body>
 <header>
-   <h2>Jerry Xu</h2>
+   <h2>JShell 1.0</h2>
+   <h4>by Jerry Xu<br>Inspired by <a href="http://uni.xkcd.com/">uni.xkcd.com</a></h4>
 </header>
 
 <div class="parent" id="main">
-	<text>Inspired by <a href="http://uni.xkcd.com/">uni.xkcd.com</a></text>
 	<div id="form">
 		<text id="list"></text>
 		<span>
@@ -26,7 +26,7 @@
 </footer>
 
 <script>
-var last = 1484515493;			// alert("done");
+var last = 1487648594;			// alert("done");
 var s = m = h = d = w = 0;		// seconds, minutes, hours, days, weeks
 var str;
 
@@ -43,11 +43,11 @@ $(document).ready(function(){
 		m = Math.floor(t/60);
 		s = t = t%60;
 		count();
-		last=setInterval(count,1000);
+		setInterval(count,1000);
 		$('#input').focus();
 	}
 
-	function count() {
+	function count(){
 		s++;
 		if ( s >= 60 ){ s = 0; m++;
 			if ( m == 60 ){ m = 0; h++;
@@ -55,18 +55,18 @@ $(document).ready(function(){
 					if ( d == 7 ){ d = 0; w++;
 		}}}}
 		str = "";
-		checkAndConc(s, " second");
+		concatenate(s, " second");
 		if(s!=0){
 			str = " and " + str;
 		}
-		checkAndConc(m, " minute");
-		checkAndConc(h, " hour");
-		checkAndConc(d, " day");
-		checkAndConc(w, " week");
+		concatenate(m, " minute");
+		concatenate(h, " hour");
+		concatenate(d, " day");
+		concatenate(w, " week");
 		document.getElementById("p1").innerHTML = str;	
 	}
 
-	function checkAndConc(t, string){
+	function concatenate(t, string){
 		if ( t == 1 ){
 			str = t + string + " " + str;
 		} else if ( t > 1 ){
@@ -75,40 +75,55 @@ $(document).ready(function(){
 	}
 	
 	function printHelp(){
-		
+		// TODO
 	}
+
+	function Folder(name, parent){
+		this.name = name;
+		this.parent = parent;
+	}
+
+	function print(str){
+		$('#list').append(str);
+	}
+
+	var foo;
+	var currentFolder = new Folder("jerrxu", null);
 
 	$('#input').keypress(function(event){
 		var keycode = (event.keyCode ? event.keyCode : event.which);
 		if(keycode == '13'){
 			var ent = $("#input").val();
-			$("#list").append("guest@jerrxu:/$ " + ent + "<br>");
+			print("guest@jerrxu:/$ " + ent + "<br>");
 			
 			switch(ent){
 				case "": // empty command, newline 
 					break;
 				case "cat":
-					$("#list").append("You're a kitty!");
+					print("You're a kitty!");
 					break;
 				case "resume":
-					$("#list").append('Please click <a href="resume.docx">here</a> to see my resume.');
+					print('Please click <a href="resume.docx">here</a> to see my resume.');
 					break;
 				case "help":
 					printHelp();
 					break;
+				case "mkdir":
+					foo = new Folder("new aha", currentFolder);
+					break;
 				case "pwd":
-					$("#list").append("jerrxu/Users/guest");
+					print(foo.parent.name + "/" + foo.name);
 					break;
 				case "pizza":
 				case "piazza":
-					$("#list").append("Sry I'm working on that.");
+					print("Sry I'm working on that.");
 					break;
 				default:	//invalid command
-					$("#list").append('Unrecognized command. Type "help" for assistance.');
+					print('Unrecognized command. Type "help" for assistance.');
 			}
 			
 			if(ent != ""){
-				$("#list").append('<br>');
+				print('<br>');
 			}
 
 			$("#input").val("");		// clears textbox
