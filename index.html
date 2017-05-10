@@ -81,49 +81,73 @@ $(document).ready(function(){
 	function Folder(name, parent){
 		this.name = name;
 		this.parent = parent;
+		if (parent) {
+			parent.children[name] = this;
+			this.fullPath = parent.fullPath + "/" + name;
+		} else {
+			this.fullPath = "/" + name;
+		}
+		this.children = {};
 	}
 
 	function print(str){
 		$('#list').append(str);
 	}
 
-	var foo;
-	var currentFolder = new Folder("jerrxu", null);
+	function println(str){
+		print(str + "<br>")
+	}
+
+	var fileRoot = new Folder("jerrxu");
+
+	var currentFolder = fileRoot;
 
 	$('#input').keypress(function(event){
 		var keycode = (event.keyCode ? event.keyCode : event.which);
 		if(keycode == '13'){
 			var ent = $("#input").val();
-			print("guest@jerrxu:/$ " + ent + "<br>");
+			println("guest@jerrxu:/$ " + ent);
+			var args = ent.split(" ");
 			
-			switch(ent){
+			switch(args[0]){
 				case "": // empty command, newline 
 					break;
 				case "cat":
-					print("You're a kitty!");
+					println("You're a kitty!");
 					break;
 				case "resume":
-					print('Please click <a href="resume.docx">here</a> to see my resume.');
+					println('Please click <a href="resume.docx">here</a> to see my resume.');
 					break;
 				case "help":
 					printHelp();
 					break;
 				case "mkdir":
-					foo = new Folder("new aha", currentFolder);
+					new Folder(args[1], currentFolder);
+					break;
+				case "cd":
+					var folder = currentFolder.children[args[1]];
+					if (folder) {
+						currentFolder = folder;
+					} else {
+						println(args[1] + ' is not a folder');
+						break;
+					}
+					// fall through and also show ls
+				case "ls":
+					for (var file in currentFolder.children) {
+						// &nbsp; is space
+						println("&nbsp;" + file);
+					}
 					break;
 				case "pwd":
-					print(foo.parent.name + "/" + foo.name);
+					println(currentFolder.fullPath);
 					break;
 				case "pizza":
 				case "piazza":
-					print("Sry I'm working on that.");
+					println("Sry I'm working on that.");
 					break;
 				default:	//invalid command
-					print('Unrecognized command. Type "help" for assistance.');
-			}
-			
-			if(ent != ""){
-				print('<br>');
+					println('Unrecognized command. Type "help" for assistance.');
 			}
 
 			$("#input").val("");		// clears textbox
