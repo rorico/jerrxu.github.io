@@ -15,9 +15,8 @@
 <div class="parent" id="main">
 	<div id="form">
 		<text id="list"></text>
-		<span>
-			<label id="label">guest@jerrxu:/$ </label><input id="input" type="text" size="50"></input>
-		</span>
+		<!-- need the <br> to move the input span to the end of the sentence for some reason -->
+		guest@jerrxu:/$ <span id="input" autofocus contenteditable="true" spellcheck="false"></span><br>
 	</div>
 </div>
 
@@ -105,7 +104,7 @@ $(document).ready(function(){
 	$('#input').keypress(function(event){
 		var keycode = (event.keyCode ? event.keyCode : event.which);
 		if(keycode == '13'){
-			var ent = $("#input").val();
+			var ent = $("#input").html();
 			println("guest@jerrxu:/$ " + ent);
 			var args = ent.split(" ");
 			
@@ -150,11 +149,12 @@ $(document).ready(function(){
 					println('Unrecognized command. Type "help" for assistance.');
 			}
 
-			$("#input").val("");		// clears textbox
+			$("#input").empty("");		// clears textbox
 			$("html, body").animate({ scrollTop: $(document).height() }, "slow");
 			$('#input').focus();
-		}
 		event.stopPropagation();
+		event.preventDefault();
+		}
 	});
 });
 </script>
