@@ -75,7 +75,6 @@ $(document).ready(function() {
 	var currentFolder = fileRoot;
 	var commands = {};
 
-	commands[""] = function() {};
 	commands.cat = function() {
 		println("You're a kitty!");
 	};
@@ -114,14 +113,15 @@ $(document).ready(function() {
 		if (keycode == 13) {
 			var ent = $("#input").html();
 			println("guest@jerrxu:/$ " + ent);
-			var args = ent.split(" ");
-			var command = commands[args[0]];
-			if (command) {
-				command(args);
-			} else {
-				println("Unrecognized command. Type 'help' for assistance.");
+			if (ent) {
+				var args = ent.trim().split(" ");
+				var command = commands[args[0]];
+				if (command) {
+					command(args);
+				} else {
+					println("Unrecognized command. Type 'help' for assistance.");
+				}				
 			}
-
 			$("#input").empty("");		// clears textbox
 			$("html, body").animate({ scrollTop: $(document).height() }, "slow");
 			$("#input").focus();
