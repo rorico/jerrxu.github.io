@@ -8,8 +8,8 @@
 
 <body>
 <header>
-   <h2>JShell 1.0</h2>
-   <h4>by Jerry Xu<br>Inspired by <a href="http://uni.xkcd.com/">uni.xkcd.com</a></h4>
+   <h2>JShell 1.1</h2>
+   <h4>by <a href="https://github.com/jerrxu">Jerry X</a> & <a href="https://github.com/rorico">Daniel C</a><br>Inspired by <a href="http://uni.xkcd.com/">uni.xkcd.com</a></h4>
 </header>
 
 <div class="parent" id="main">
@@ -25,13 +25,13 @@
 </footer>
 
 <script>
-var last = 1487648594;			// alert("done");
+var last = 1494548787;			// alert("done");
 var s = m = h = d = w = 0;		// seconds, minutes, hours, days, weeks
 var str;
 
 $(document).ready(function(){
 	$(startup());
-	function startup(){
+	function startup() {
 		var t = new Date().getTime().toString().substr(0, 10) - last;
 		w = Math.floor(t/604800);
 		t = t%604800;
@@ -44,9 +44,12 @@ $(document).ready(function(){
 		count();
 		setInterval(count,1000);
 		$('#input').focus();
+
+		new Folder("Daniel Chen", currentFolder);
+		new Folder("Jerry Xu", currentFolder);
 	}
 
-	function count(){
+	function count() {
 		s++;
 		if ( s >= 60 ){ s = 0; m++;
 			if ( m == 60 ){ m = 0; h++;
@@ -65,7 +68,7 @@ $(document).ready(function(){
 		document.getElementById("p1").innerHTML = str;	
 	}
 
-	function concatenate(t, string){
+	function concatenate(t, string) {
 		if ( t == 1 ){
 			str = t + string + " " + str;
 		} else if ( t > 1 ){
@@ -73,11 +76,15 @@ $(document).ready(function(){
 		}
 	}
 	
-	function printHelp(){
-		// TODO
+	function printHelp() {
+		// TODO: doesn't work :(
+		// println("Valid commands:");
+		// for (var str in validCommands) {
+		// 	println(str);
+		// }
 	}
 
-	function Folder(name, parent){
+	function Folder(name, parent) {
 		this.name = name;
 		this.parent = parent;
 		if (parent) {
@@ -89,17 +96,28 @@ $(document).ready(function(){
 		this.children = {};
 	}
 
-	function print(str){
+	function File(name, parent) {
+		this.name = name;
+		this.parent = parent;
+		if (parent) {
+			parent.children[name] = this;
+			this.fullPath = parent.fullPath + "/" + name;
+		} else {
+			this.fullPath = "/" + name;
+		}
+	}
+
+	function print(str) {
 		$('#list').append(str);
 	}
 
-	function println(str){
+	function println(str) {
 		print(str + "<br>")
 	}
 
 	var fileRoot = new Folder("jerrxu");
-
 	var currentFolder = fileRoot;
+	var validCommands = ["cat", "resume", "help", "mkdir", "rm", "cd", "ls", "pwd"];
 
 	$('#input').keypress(function(event){
 		var keycode = (event.keyCode ? event.keyCode : event.which);
@@ -115,35 +133,47 @@ $(document).ready(function(){
 					println("You're a kitty!");
 					break;
 				case "resume":
-					println('Please click <a href="resume.docx">here</a> to see my resume.');
+					println('Click <a href="resume.docx">here</a> to see my resume.');
 					break;
 				case "help":
-					printHelp();
+					//printHelp();
+					println("You're on your own for now :)");
 					break;
 				case "mkdir":
+					if (args[1] == ".." || args[1] == ".") {
+						println("mkdir: cannot create folder \'' + args[1] + '\': File exists'");
+					}
 					new Folder(args[1], currentFolder);
 					break;
+				case "rm":
+					var entry = currentFolder.children[args[1]];
+					if (entry) {
+						delete currentFolder.children[args[1]];
+					} else {
+						println('rm: cannot remove \'' + args[1] + '\': No such file or folder');
+					}
+					break;
 				case "cd":
+					if (args[1] == "..") {
+						if (currentFolder.parent) {
+							currentFolder = currentFolder.parent;
+						}
+						break;
+					}
 					var folder = currentFolder.children[args[1]];
 					if (folder) {
 						currentFolder = folder;
 					} else {
-						println(args[1] + ' is not a folder');
-						break;
+						println('cd: cannot find \'' + args[1] + '\': No such file or folder');
 					}
-					// fall through and also show ls
+					break;
 				case "ls":
 					for (var file in currentFolder.children) {
-						// &nbsp; is space
 						println("&nbsp;" + file);
 					}
 					break;
 				case "pwd":
 					println(currentFolder.fullPath);
-					break;
-				case "pizza":
-				case "piazza":
-					println("Sry I'm working on that.");
 					break;
 				default:	//invalid command
 					println('Unrecognized command. Type "help" for assistance.');
