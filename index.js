@@ -2,9 +2,9 @@ var last = 1487648594;			// alert("done");
 var s = m = h = d = w = 0;		// seconds, minutes, hours, days, weeks
 var str;
 
-$(document).ready(function(){
+$(document).ready(function() {
 	$(startup());
-	function startup(){
+	function startup() {
 		var t = new Date().getTime().toString().substr(0, 10) - last;
 		w = Math.floor(t/604800);
 		t = t%604800;
@@ -16,19 +16,19 @@ $(document).ready(function(){
 		s = t = t%60;
 		count();
 		setInterval(count,1000);
-		$('#input').focus();
+		$("#input").focus();
 	}
 
-	function count(){
+	function count() {
 		s++;
-		if ( s >= 60 ){ s = 0; m++;
-			if ( m == 60 ){ m = 0; h++;
-				if ( h == 24 ){ h = 0; d++;
-					if ( d == 7 ){ d = 0; w++;
+		if ( s >= 60 ) { s = 0; m++;
+			if ( m == 60 ) { m = 0; h++;
+				if ( h == 24 ) { h = 0; d++;
+					if ( d == 7 ) { d = 0; w++;
 		}}}}
 		str = "";
 		concatenate(s, " second");
-		if(s!=0){
+		if (s!=0) {
 			str = " and " + str;
 		}
 		concatenate(m, " minute");
@@ -38,19 +38,19 @@ $(document).ready(function(){
 		document.getElementById("p1").innerHTML = str;	
 	}
 
-	function concatenate(t, string){
-		if ( t == 1 ){
+	function concatenate(t, string) {
+		if ( t == 1 ) {
 			str = t + string + " " + str;
-		} else if ( t > 1 ){
+		} else if ( t > 1 ) {
 			str = t + string + "s " + str;
 		}
 	}
 	
-	function printHelp(){
+	function printHelp() {
 		// TODO
 	}
 
-	function Folder(name, parent){
+	function Folder(name, parent) {
 		this.name = name;
 		this.parent = parent;
 		if (parent) {
@@ -62,11 +62,11 @@ $(document).ready(function(){
 		this.children = {};
 	}
 
-	function print(str){
-		$('#list').append(str);
+	function print(str) {
+		$("#list").append(str);
 	}
 
-	function println(str){
+	function println(str) {
 		print(str + "<br>")
 	}
 
@@ -74,22 +74,21 @@ $(document).ready(function(){
 
 	var currentFolder = fileRoot;
 
-	$('#input').keypress(function(event){
+	$("#input").keypress(function(event) {
 		var keycode = (event.keyCode ? event.keyCode : event.which);
-		if(keycode == '13'){
+		if (keycode == 13) {
 			var ent = $("#input").html();
-		console.log(ent)
 			println("guest@jerrxu:/$ " + ent);
 			var args = ent.split(" ");
 			
-			switch(args[0]){
+			switch (args[0]) {
 				case "": // empty command, newline 
 					break;
 				case "cat":
 					println("You're a kitty!");
 					break;
 				case "resume":
-					println('Please click <a href="resume.docx">here</a> to see my resume.');
+					println("Please click <a href='resume.docx'>here</a> to see my resume.");
 					break;
 				case "help":
 					printHelp();
@@ -102,7 +101,7 @@ $(document).ready(function(){
 					if (folder) {
 						currentFolder = folder;
 					} else {
-						println(args[1] + ' is not a folder');
+						println(args[1] + " is not a folder");
 						break;
 					}
 					// fall through and also show ls
@@ -120,14 +119,14 @@ $(document).ready(function(){
 					println("Sry I'm working on that.");
 					break;
 				default:	//invalid command
-					println('Unrecognized command. Type "help" for assistance.');
+					println("Unrecognized command. Type 'help' for assistance.");
 			}
 
 			$("#input").empty("");		// clears textbox
 			$("html, body").animate({ scrollTop: $(document).height() }, "slow");
-			$('#input').focus();
-		event.stopPropagation();
-		event.preventDefault();
+			$("#input").focus();
+			event.stopPropagation();
+			event.preventDefault();
 		}
 	});
 });
