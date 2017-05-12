@@ -73,6 +73,41 @@ $(document).ready(function() {
 	var fileRoot = new Folder("jerrxu");
 
 	var currentFolder = fileRoot;
+	var commands = {};
+
+	commands[""] = function() {};
+	commands.cat = function() {
+		println("You're a kitty!");
+	};
+	commands.resume = function() {
+		println("Please click <a href='resume.docx'>here</a> to see my resume.");
+	};
+	commands.help = function() {
+		printHelp();
+	};
+	commands.mkdir = function() {
+		new Folder(args[1], currentFolder);
+	};
+	commands.cd = function() {
+		var folder = currentFolder.children[args[1]];
+		if (folder) {
+			currentFolder = folder;
+		} else {
+			println(args[1] + " is not a folder");
+		}
+	};
+	commands.ls = function() {
+		for (var file in currentFolder.children) {
+			// &nbsp; is space
+			println("&nbsp;" + file);
+		}
+	};
+	commands.pwd = function() {
+		println(currentFolder.fullPath);
+	};
+	commands.pizza = commands.piazza = function() {
+		println("Sry I'm working on that.");
+	};
 
 	$("#input").keypress(function(event) {
 		var keycode = (event.keyCode ? event.keyCode : event.which);
@@ -80,46 +115,11 @@ $(document).ready(function() {
 			var ent = $("#input").html();
 			println("guest@jerrxu:/$ " + ent);
 			var args = ent.split(" ");
-			
-			switch (args[0]) {
-				case "": // empty command, newline 
-					break;
-				case "cat":
-					println("You're a kitty!");
-					break;
-				case "resume":
-					println("Please click <a href='resume.docx'>here</a> to see my resume.");
-					break;
-				case "help":
-					printHelp();
-					break;
-				case "mkdir":
-					new Folder(args[1], currentFolder);
-					break;
-				case "cd":
-					var folder = currentFolder.children[args[1]];
-					if (folder) {
-						currentFolder = folder;
-					} else {
-						println(args[1] + " is not a folder");
-						break;
-					}
-					// fall through and also show ls
-				case "ls":
-					for (var file in currentFolder.children) {
-						// &nbsp; is space
-						println("&nbsp;" + file);
-					}
-					break;
-				case "pwd":
-					println(currentFolder.fullPath);
-					break;
-				case "pizza":
-				case "piazza":
-					println("Sry I'm working on that.");
-					break;
-				default:	//invalid command
-					println("Unrecognized command. Type 'help' for assistance.");
+			var command = commands[args[0]];
+			if (command) {
+				command(args);
+			} else {
+				println("Unrecognized command. Type 'help' for assistance.");
 			}
 
 			$("#input").empty("");		// clears textbox
