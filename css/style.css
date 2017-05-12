@@ -34,7 +34,11 @@ div.parent{
 #main{
 	padding: 5px;
 }
+#form{
+    word-break: break-all;
+}
 #input{
+    display: inline;
     padding: 0;
 	border: 0;
 	font-size: 100%;
