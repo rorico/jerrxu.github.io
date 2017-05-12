@@ -75,19 +75,19 @@ $(document).ready(function() {
 	var currentFolder = fileRoot;
 	var commands = {};
 
-	commands.cat = function() {
+	commands.cat = function(args) {
 		println("You're a kitty!");
 	};
-	commands.resume = function() {
+	commands.resume = function(args) {
 		println("Please click <a href='resume.docx'>here</a> to see my resume.");
 	};
-	commands.help = function() {
+	commands.help = function(args) {
 		printHelp();
 	};
-	commands.mkdir = function() {
+	commands.mkdir = function(args) {
 		new Folder(args[1], currentFolder);
 	};
-	commands.cd = function() {
+	commands.cd = function(args) {
 		var folder = currentFolder.children[args[1]];
 		if (folder) {
 			currentFolder = folder;
@@ -95,16 +95,16 @@ $(document).ready(function() {
 			println(args[1] + " is not a folder");
 		}
 	};
-	commands.ls = function() {
+	commands.ls = function(args) {
 		for (var file in currentFolder.children) {
 			// &nbsp; is space
 			println("&nbsp;" + file);
 		}
 	};
-	commands.pwd = function() {
+	commands.pwd = function(args) {
 		println(currentFolder.fullPath);
 	};
-	commands.pizza = commands.piazza = function() {
+	commands.pizza = commands.piazza = function(args) {
 		println("Sry I'm working on that.");
 	};
 
