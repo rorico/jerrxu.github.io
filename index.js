@@ -1,4 +1,4 @@
-var last = 1487648594;			// alert("done");
+var last = 1494548787;			// alert("done");
 var s = m = h = d = w = 0;		// seconds, minutes, hours, days, weeks
 var str;
 
@@ -17,6 +17,9 @@ $(document).ready(function() {
 		count();
 		setInterval(count,1000);
 		$("#input").focus();
+
+		new Folder("Daniel Chen", currentFolder);
+		new Folder("Jerry Xu", currentFolder);
 	}
 
 	function count() {
@@ -48,6 +51,10 @@ $(document).ready(function() {
 	
 	function printHelp() {
 		// TODO
+		// println("Valid commands:");
+		// for (var str in validCommands) {
+		// 	println(str);
+		// }
 	}
 
 	function Folder(name, parent) {
@@ -62,6 +69,16 @@ $(document).ready(function() {
 		this.children = {};
 	}
 
+	function File(name, parent) {
+		this.name = name;
+		this.parent = parent;
+		if (parent) {
+			parent.children[name] = this;
+			this.fullPath = parent.fullPath + "/" + name;
+		} else {
+			this.fullPath = "/" + name;
+		}
+	}
 	function print(str) {
 		$("#list").append(str);
 	}
@@ -73,26 +90,45 @@ $(document).ready(function() {
 	var fileRoot = new Folder("jerrxu");
 
 	var currentFolder = fileRoot;
+	var validCommands = ["cat", "resume", "help", "mkdir", "rm", "cd", "ls", "pwd"]; //this isn't true
 	var commands = {};
 
 	commands.cat = function(args) {
 		println("You're a kitty!");
 	};
 	commands.resume = function(args) {
-		println("Please click <a href='resume.docx'>here</a> to see my resume.");
+		println("Click <a href='resume.docx'>here</a> to see my resume.");
 	};
 	commands.help = function(args) {
-		printHelp();
+		//printHelp();
+		println("You're on your own for now :)");
 	};
 	commands.mkdir = function(args) {
+		if (args[1] == ".." || args[1] == ".") {
+			println("mkdir: cannot create folder \'' + args[1] + '\': File exists'");
+		}
 		new Folder(args[1], currentFolder);
 	};
+	commands.rm = function(args) {
+		var entry = currentFolder.children[args[1]];
+		if (entry) {
+			delete currentFolder.children[args[1]];
+		} else {
+			println('rm: cannot remove \'' + args[1] + '\': No such file or folder');
+		}
+	}
 	commands.cd = function(args) {
+		if (args[1] == "..") {
+			if (currentFolder.parent) {
+				currentFolder = currentFolder.parent;
+			}
+			return;
+		}
 		var folder = currentFolder.children[args[1]];
 		if (folder) {
 			currentFolder = folder;
 		} else {
-			println(args[1] + " is not a folder");
+			println('cd: cannot find \'' + args[1] + '\': No such file or folder');
 		}
 	};
 	commands.ls = function(args) {
