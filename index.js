@@ -1,4 +1,4 @@
-var last = 1494548787;			// alert("done");
+var last = new Date(document.lastModified);	// this doesn't really work on local, probably only changes for js file
 var s = m = h = d = w = 0;		// seconds, minutes, hours, days, weeks
 var str;
 
