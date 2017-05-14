@@ -97,7 +97,7 @@ $(document).ready(function() {
 		println("You're a kitty!");
 	};
 	commands.resume = function(args) {
-		println("Click <a href='resume.docx'>here</a> to see my resume.");
+		println("Click <a href='resume.pdf'>here</a> to see my resume.");
 	};
 	commands.help = function(args) {
 		//printHelp();
