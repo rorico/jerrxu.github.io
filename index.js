@@ -1,11 +1,15 @@
-var last = new Date(document.lastModified);	// this doesn't really work on local, probably only changes for js file
+// this doesn't really work on local, probably only changes for js file
+var last = new Date(document.lastModified);	
+// github has weird bug with date being 2 hours ahead
+last.setHours(last.getHours() - 2);
 var s = m = h = d = w = 0;		// seconds, minutes, hours, days, weeks
 var str;
 
 $(document).ready(function() {
 	$(startup());
 	function startup() {
-		var t = new Date().getTime().toString().substr(0, 10) - last;
+		// convert to seconds
+		var t = Math.floor((new Date() - last)/1000);
 		w = Math.floor(t/604800);
 		t = t%604800;
 		d = Math.floor(t/86400);
