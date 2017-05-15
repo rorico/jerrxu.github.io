@@ -94,7 +94,6 @@ $(document).ready(function() {
 	var fileRoot = new Folder("jerrxu");
 
 	var currentFolder = fileRoot;
-	var validCommands = ["cat", "resume", "help", "mkdir", "rm", "cd", "ls", "pwd"]; //this isn't true
 	var commands = {};
 
 	commands.cat = function(args) {
