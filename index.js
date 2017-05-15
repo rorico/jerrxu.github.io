@@ -1,11 +1,15 @@
-var last = new Date(document.lastModified);	// this doesn't really work on local, probably only changes for js file
+// this doesn't really work on local, probably only changes for js file
+var last = new Date(document.lastModified);	
+// github has weird bug with date being 2 hours ahead
+last.setHours(last.getHours() - 2);
 var s = m = h = d = w = 0;		// seconds, minutes, hours, days, weeks
 var str;
 
 $(document).ready(function() {
 	$(startup());
 	function startup() {
-		var t = new Date().getTime().toString().substr(0, 10) - last;
+		// convert to seconds
+		var t = Math.floor((new Date() - last)/1000);
 		w = Math.floor(t/604800);
 		t = t%604800;
 		d = Math.floor(t/86400);
@@ -51,10 +55,10 @@ $(document).ready(function() {
 	
 	function printHelp() {
 		// TODO
-		// println("Valid commands:");
-		// for (var str in validCommands) {
-		// 	println(str);
-		// }
+		println("Valid commands:");
+		for (var str in commands) {
+			println(str);
+		}
 	}
 
 	function Folder(name, parent) {
@@ -100,8 +104,7 @@ $(document).ready(function() {
 		println("Click <a href='resume.pdf'>here</a> to see my resume.");
 	};
 	commands.help = function(args) {
-		//printHelp();
-		println("You're on your own for now :)");
+		printHelp();
 	};
 	commands.mkdir = function(args) {
 		if (args[1] == ".." || args[1] == ".") {
