@@ -177,14 +177,38 @@ $(document).ready(function() {
 		if (keycode == 38) {
 			if (curCommandIndex > 0) {
 				curCommandIndex--;
-				$("#input").html(commandHistory[curCommandIndex] || "");
+				changeInput();
 			}
 		} else if (keycode == 40) {
 			if (curCommandIndex < commandHistory.length) {
 				curCommandIndex++;
-				$("#input").html(commandHistory[curCommandIndex] || "");
+				changeInput();
 			}
 		}
-	});
+		function changeInput() {
+			var input = $("#input").html(commandHistory[curCommandIndex] || "");
+			placeCaretAtEnd(input[0]);
+			event.stopPropagation();
+			event.preventDefault();
+		}
 
+		//from http://stackoverflow.com/a/4238971
+		function placeCaretAtEnd(el) {
+		    el.focus();
+		    if (typeof window.getSelection != "undefined"
+		            && typeof document.createRange != "undefined") {
+		        var range = document.createRange();
+		        range.selectNodeContents(el);
+		        range.collapse(false);
+		        var sel = window.getSelection();
+		        sel.removeAllRanges();
+		        sel.addRange(range);
+		    } else if (typeof document.body.createTextRange != "undefined") {
+		        var textRange = document.body.createTextRange();
+		        textRange.moveToElementText(el);
+		        textRange.collapse(false);
+		        textRange.select();
+		    }
+		}
+	});
 });
