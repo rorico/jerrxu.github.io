@@ -55,10 +55,10 @@ $(document).ready(function() {
 	
 	function printHelp() {
 		// TODO
-		// println("Valid commands:");
-		// for (var str in validCommands) {
-		// 	println(str);
-		// }
+		println("Valid commands:");
+		for (var str in commands) {
+			println(str);
+		}
 	}
 
 	function Folder(name, parent) {
@@ -94,7 +94,6 @@ $(document).ready(function() {
 	var fileRoot = new Folder("jerrxu");
 
 	var currentFolder = fileRoot;
-	var validCommands = ["cat", "resume", "help", "mkdir", "rm", "cd", "ls", "pwd"]; //this isn't true
 	var commands = {};
 
 	commands.cat = function(args) {
@@ -104,8 +103,7 @@ $(document).ready(function() {
 		println("Click <a href='resume.pdf'>here</a> to see my resume.");
 	};
 	commands.help = function(args) {
-		//printHelp();
-		println("You're on your own for now :)");
+		printHelp();
 	};
 	commands.mkdir = function(args) {
 		if (args[1] == ".." || args[1] == ".") {
