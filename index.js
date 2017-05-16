@@ -1,11 +1,15 @@
-var last = 1494548787;			// alert("done");
+// this doesn't really work on local, probably only changes for js file
+var last = new Date(document.lastModified);	
+// github has weird bug with date being 2 hours ahead
+last.setHours(last.getHours() - 2);
 var s = m = h = d = w = 0;		// seconds, minutes, hours, days, weeks
 var str;
 
 $(document).ready(function() {
 	$(startup());
 	function startup() {
-		var t = new Date().getTime().toString().substr(0, 10) - last;
+		// convert to seconds
+		var t = Math.floor((new Date() - last)/1000);
 		w = Math.floor(t/604800);
 		t = t%604800;
 		d = Math.floor(t/86400);
@@ -51,10 +55,10 @@ $(document).ready(function() {
 	
 	function printHelp() {
 		// TODO
-		// println("Valid commands:");
-		// for (var str in validCommands) {
-		// 	println(str);
-		// }
+		println("Valid commands:");
+		for (var str in commands) {
+			println(str);
+		}
 	}
 
 	function Folder(name, parent) {
@@ -88,9 +92,10 @@ $(document).ready(function() {
 	}
 
 	var fileRoot = new Folder("jerrxu");
+	var commandHistory = [];
+	var curCommandIndex = 0;
 
 	var currentFolder = fileRoot;
-	var validCommands = ["cat", "resume", "help", "mkdir", "rm", "cd", "ls", "pwd"]; //this isn't true
 	var commands = {};
 
 	commands.cat = function(args) {
@@ -100,8 +105,7 @@ $(document).ready(function() {
 		println("Click <a href='resume.pdf'>here</a> to see my resume.");
 	};
 	commands.help = function(args) {
-		//printHelp();
-		println("You're on your own for now :)");
+		printHelp();
 	};
 	commands.mkdir = function(args) {
 		if (args[1] == ".." || args[1] == ".") {
@@ -147,7 +151,10 @@ $(document).ready(function() {
 	$("#input").keypress(function(event) {
 		var keycode = (event.keyCode ? event.keyCode : event.which);
 		if (keycode == 13) {
+			// enter key
 			var ent = $("#input").html();
+			commandHistory.push(ent);
+			curCommandIndex = commandHistory.length;
 			println("guest@jerrxu:/$ " + ent);
 			if (ent) {
 				var args = ent.trim().split(" ");
@@ -158,11 +165,49 @@ $(document).ready(function() {
 					println("Unrecognized command. Type 'help' for assistance.");
 				}				
 			}
-			$("#input").empty("");		// clears textbox
+			$("#input").empty();		// clears textbox
 			$("html, body").animate({ scrollTop: $(document).height() }, "slow");
 			$("#input").focus();
 			event.stopPropagation();
 			event.preventDefault();
+		}
+	}).keydown(function(event) {
+		var keycode = (event.keyCode ? event.keyCode : event.which);
+		if (keycode == 38) {
+			if (curCommandIndex > 0) {
+				curCommandIndex--;
+				changeInput();
+			}
+		} else if (keycode == 40) {
+			if (curCommandIndex < commandHistory.length) {
+				curCommandIndex++;
+				changeInput();
+			}
+		}
+		function changeInput() {
+			var input = $("#input").html(commandHistory[curCommandIndex] || "");
+			placeCaretAtEnd(input[0]);
+			event.stopPropagation();
+			event.preventDefault();
+		}
+
+		//from http://stackoverflow.com/a/4238971
+		function placeCaretAtEnd(el) {
+		    el.focus();
+		    if (typeof window.getSelection != "undefined"
+		            && typeof document.createRange != "undefined") {
+		        var range = document.createRange();
+		        range.selectNodeContents(el);
+		        range.collapse(false);
+		        var sel = window.getSelection();
+		        sel.removeAllRanges();
+		        sel.addRange(range);
+		    } else if (typeof document.body.createTextRange != "undefined") {
+		        var textRange = document.body.createTextRange();
+		        textRange.moveToElementText(el);
+		        textRange.collapse(false);
+		        textRange.select();
+		    }
 		}
 	});
 });
