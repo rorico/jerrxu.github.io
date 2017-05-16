@@ -92,6 +92,8 @@ $(document).ready(function() {
 	}
 
 	var fileRoot = new Folder("jerrxu");
+	var commandHistory = [];
+	var curCommandIndex = 0;
 
 	var currentFolder = fileRoot;
 	var commands = {};
@@ -149,7 +151,10 @@ $(document).ready(function() {
 	$("#input").keypress(function(event) {
 		var keycode = (event.keyCode ? event.keyCode : event.which);
 		if (keycode == 13) {
+			// enter key
 			var ent = $("#input").html();
+			commandHistory.push(ent);
+			curCommandIndex = commandHistory.length;
 			println("guest@jerrxu:/$ " + ent);
 			if (ent) {
 				var args = ent.trim().split(" ");
@@ -160,11 +165,49 @@ $(document).ready(function() {
 					println("Unrecognized command. Type 'help' for assistance.");
 				}				
 			}
-			$("#input").empty("");		// clears textbox
+			$("#input").empty();		// clears textbox
 			$("html, body").animate({ scrollTop: $(document).height() }, "slow");
 			$("#input").focus();
 			event.stopPropagation();
 			event.preventDefault();
+		}
+	}).keydown(function(event) {
+		var keycode = (event.keyCode ? event.keyCode : event.which);
+		if (keycode == 38) {
+			if (curCommandIndex > 0) {
+				curCommandIndex--;
+				changeInput();
+			}
+		} else if (keycode == 40) {
+			if (curCommandIndex < commandHistory.length) {
+				curCommandIndex++;
+				changeInput();
+			}
+		}
+		function changeInput() {
+			var input = $("#input").html(commandHistory[curCommandIndex] || "");
+			placeCaretAtEnd(input[0]);
+			event.stopPropagation();
+			event.preventDefault();
+		}
+
+		//from http://stackoverflow.com/a/4238971
+		function placeCaretAtEnd(el) {
+		    el.focus();
+		    if (typeof window.getSelection != "undefined"
+		            && typeof document.createRange != "undefined") {
+		        var range = document.createRange();
+		        range.selectNodeContents(el);
+		        range.collapse(false);
+		        var sel = window.getSelection();
+		        sel.removeAllRanges();
+		        sel.addRange(range);
+		    } else if (typeof document.body.createTextRange != "undefined") {
+		        var textRange = document.body.createTextRange();
+		        textRange.moveToElementText(el);
+		        textRange.collapse(false);
+		        textRange.select();
+		    }
 		}
 	});
 });
