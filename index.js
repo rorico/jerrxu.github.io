@@ -98,9 +98,6 @@ $(document).ready(function() {
 	var currentFolder = fileRoot;
 	var commands = {};
 
-	commands.cat = function(args) {
-		println("You're a kitty!");
-	};
 	commands.resume = function(args) {
 		println("Click <a href='resume.pdf'>here</a> to see my resume.");
 	};
@@ -144,8 +141,15 @@ $(document).ready(function() {
 	commands.pwd = function(args) {
 		println(currentFolder.fullPath);
 	};
-	commands.pizza = commands.piazza = function(args) {
-		println("Sry I'm working on that.");
+	commands.pizza = function(args) {
+		println("Piazza!");
+	};
+	
+	commands.piazza = function(args) {
+		println("Pizza!");
+	};
+	commands.cat = function(args) {
+		println("You're a kitty!");
 	};
 
 	$("#input").keypress(function(event) {
