@@ -170,16 +170,53 @@ $(document).ready(function() {
 	}).keydown(function(event) {
 		var keycode = (event.keyCode ? event.keyCode : event.which);
 		if (keycode == 38) {
+			//up key
 			if (curCommandIndex > 0) {
 				curCommandIndex--;
 				changeInput();
 			}
 		} else if (keycode == 40) {
+			//down key
 			if (curCommandIndex < commandHistory.length) {
 				curCommandIndex++;
 				changeInput();
 			}
+		} else if (keycode == 9) {
+			//tab key
+			//autocomplete
+			event.stopPropagation();
+			event.preventDefault();
+			var input = $("#input");
+			var current = input.html();
+			if (!current) {
+				return;
+			}
+			var parts = current.split(" ");
+			var last = parts[parts.length - 1];
+			var possible = [];
+			check(currentFolder.children);
+			check(commands);
+			if (possible.length > 1) {
+				println("guest@jerrxu:/$ " + current);
+				println("&nbsp;" + possible.join("    "));
+				$("html, body").animate({ scrollTop: $(document).height() }, "slow");
+				$("#input").focus();
+			} else if (possible.length) {
+				//append to the end
+				current += possible[0].substr(last.length);
+				input.html(current);
+				placeCaretAtEnd(input[0]);
+			}
+
+			function check(list) {
+				for (var cmd in list) {
+					if (cmd.startsWith(last)) {
+						possible.push(cmd);
+					}
+				}
+			}
 		}
+
 		function changeInput() {
 			var input = $("#input").html(commandHistory[curCommandIndex] || "");
 			placeCaretAtEnd(input[0]);
@@ -189,21 +226,21 @@ $(document).ready(function() {
 
 		//from http://stackoverflow.com/a/4238971
 		function placeCaretAtEnd(el) {
-		    el.focus();
-		    if (typeof window.getSelection != "undefined"
-		            && typeof document.createRange != "undefined") {
-		        var range = document.createRange();
-		        range.selectNodeContents(el);
-		        range.collapse(false);
-		        var sel = window.getSelection();
-		        sel.removeAllRanges();
-		        sel.addRange(range);
-		    } else if (typeof document.body.createTextRange != "undefined") {
-		        var textRange = document.body.createTextRange();
-		        textRange.moveToElementText(el);
-		        textRange.collapse(false);
-		        textRange.select();
-		    }
+			el.focus();
+			if (typeof window.getSelection != "undefined"
+					&& typeof document.createRange != "undefined") {
+				var range = document.createRange();
+				range.selectNodeContents(el);
+				range.collapse(false);
+				var sel = window.getSelection();
+				sel.removeAllRanges();
+				sel.addRange(range);
+			} else if (typeof document.body.createTextRange != "undefined") {
+				var textRange = document.body.createTextRange();
+				textRange.moveToElementText(el);
+				textRange.collapse(false);
+				textRange.select();
+			}
 		}
 	});
 });
