@@ -62,16 +62,11 @@ $(document).ready(function() {
 	}
 
 	function Folder(name, parent) {
-		this.name = name;
-		this.parent = parent;
-		if (parent) {
-			parent.children[name] = this;
-			this.fullPath = parent.fullPath + "/" + name;
-		} else {
-			this.fullPath = "/" + name;
-		}
+		File.call(this, name, parent);
 		this.children = {};
 	}
+
+	Folder.prototype = new File();
 
 	function File(name, parent) {
 		this.name = name;
