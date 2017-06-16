@@ -63,6 +63,7 @@ $(document).ready(function() {
 
 	function Folder(name, parent) {
 		File.call(this, name, parent, function() {
+			println(name + " is a folder");
 		});
 		this.children = {};
 	}
