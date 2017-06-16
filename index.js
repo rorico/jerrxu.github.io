@@ -6,7 +6,6 @@ var s = m = h = d = w = 0;		// seconds, minutes, hours, days, weeks
 var str;
 
 $(document).ready(function() {
-	$(startup());
 	function startup() {
 		// convert to seconds
 		var t = Math.floor((new Date() - last)/1000);
@@ -22,8 +21,18 @@ $(document).ready(function() {
 		setInterval(count,1000);
 		$("#input").focus();
 
-		new Folder("Daniel Chen", currentFolder);
-		new Folder("Jerry Xu", currentFolder);
+		new File("resume", currentFolder, function() {
+			println("Click <a href='resume.pdf'>here</a> to see my resume.");
+			$("#list").append(
+				"<div style='width:100%;height:300px;text-align:center'>" +
+				"    <object style='width:70%;height:100%;text-align:center' data='resume.pdf' type='application/pdf'>" +
+				"        <p>" +
+				"        You don't seem to have a pdf viewer plugin for this browser. Click <a href='resume.pdf'>here</a> to download." +
+				"        </p>" +
+				"    </object>" +
+				"</div>"
+			);
+		});
 	}
 
 	function count() {
@@ -94,10 +103,8 @@ $(document).ready(function() {
 
 	var currentFolder = fileRoot;
 	var commands = {};
+	startup();
 
-	commands.resume = function(args) {
-		println("Click <a href='resume.pdf'>here</a> to see my resume.");
-	};
 	commands.help = function(args) {
 		printHelp();
 	};
