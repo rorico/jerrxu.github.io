@@ -62,13 +62,13 @@ $(document).ready(function() {
 	}
 
 	function Folder(name, parent) {
-		File.call(this, name, parent);
+		File.call(this, name, parent, function() {
+		});
 		this.children = {};
 	}
-
 	Folder.prototype = new File();
 
-	function File(name, parent) {
+	function File(name, parent, exec) {
 		this.name = name;
 		this.parent = parent;
 		if (parent) {
@@ -77,6 +77,7 @@ $(document).ready(function() {
 		} else {
 			this.fullPath = "/" + name;
 		}
+		this.exec = exec;
 	}
 	function print(str) {
 		$("#list").append(str);
@@ -161,8 +162,35 @@ $(document).ready(function() {
 				if (command) {
 					command(args);
 				} else {
-					println("Unrecognized command. Type 'help' for assistance.");
-				}				
+					//not a global command
+					//get path, split into parts
+					var parts = args[0].split(/[\/\\]/g);
+					var folder = currentFolder;
+					var good = true;
+					for (var i = 0 ; i < parts.length - 1; i++) {
+						var name = parts[i];
+						if (folder.children[name]) {
+							folder = folder.children[name];
+						} else {
+							good = false;
+							break;
+						}
+					}
+					if (good) {
+						var file = parts[parts.length - 1];
+						var f = folder.children[file];
+						if (f) {
+							if (typeof f.exec === "function") {
+								f.exec();
+							}
+							//donno what default should be
+						} else {
+							println("Unrecognized command. Type 'help' for assistance.");
+						}
+					} else {
+						println("No folder " + name);
+					}
+				}
 			}
 			$("#input").empty();		// clears textbox
 			$("html, body").animate({ scrollTop: $(document).height() }, "slow");
