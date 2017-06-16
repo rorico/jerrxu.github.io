@@ -62,16 +62,11 @@ $(document).ready(function() {
 	}
 
 	function Folder(name, parent) {
-		this.name = name;
-		this.parent = parent;
-		if (parent) {
-			parent.children[name] = this;
-			this.fullPath = parent.fullPath + "/" + name;
-		} else {
-			this.fullPath = "/" + name;
-		}
+		File.call(this, name, parent);
 		this.children = {};
 	}
+
+	Folder.prototype = new File();
 
 	function File(name, parent) {
 		this.name = name;
@@ -92,13 +87,12 @@ $(document).ready(function() {
 	}
 
 	var fileRoot = new Folder("jerrxu");
+	var commandHistory = [];
+	var curCommandIndex = 0;
 
 	var currentFolder = fileRoot;
 	var commands = {};
 
-	commands.cat = function(args) {
-		println("You're a kitty!");
-	};
 	commands.resume = function(args) {
 		println("Click <a href='resume.pdf'>here</a> to see my resume.");
 	};
@@ -142,14 +136,24 @@ $(document).ready(function() {
 	commands.pwd = function(args) {
 		println(currentFolder.fullPath);
 	};
-	commands.pizza = commands.piazza = function(args) {
-		println("Sry I'm working on that.");
+	commands.pizza = function(args) {
+		println("Piazza!");
+	};
+	
+	commands.piazza = function(args) {
+		println("Pizza!");
+	};
+	commands.cat = function(args) {
+		println("You're a kitty!");
 	};
 
 	$("#input").keypress(function(event) {
 		var keycode = (event.keyCode ? event.keyCode : event.which);
 		if (keycode == 13) {
+			// enter key
 			var ent = $("#input").html();
+			commandHistory.push(ent);
+			curCommandIndex = commandHistory.length;
 			println("guest@jerrxu:/$ " + ent);
 			if (ent) {
 				var args = ent.trim().split(" ");
@@ -160,11 +164,86 @@ $(document).ready(function() {
 					println("Unrecognized command. Type 'help' for assistance.");
 				}				
 			}
-			$("#input").empty("");		// clears textbox
+			$("#input").empty();		// clears textbox
 			$("html, body").animate({ scrollTop: $(document).height() }, "slow");
 			$("#input").focus();
 			event.stopPropagation();
 			event.preventDefault();
+		}
+	}).keydown(function(event) {
+		var keycode = (event.keyCode ? event.keyCode : event.which);
+		if (keycode == 38) {
+			//up key
+			if (curCommandIndex > 0) {
+				curCommandIndex--;
+				changeInput();
+			}
+		} else if (keycode == 40) {
+			//down key
+			if (curCommandIndex < commandHistory.length) {
+				curCommandIndex++;
+				changeInput();
+			}
+		} else if (keycode == 9) {
+			//tab key
+			//autocomplete
+			event.stopPropagation();
+			event.preventDefault();
+			var input = $("#input");
+			var current = input.html();
+			if (!current) {
+				return;
+			}
+			var parts = current.split(" ");
+			var last = parts[parts.length - 1];
+			var possible = [];
+			check(currentFolder.children);
+			check(commands);
+			if (possible.length > 1) {
+				println("guest@jerrxu:/$ " + current);
+				println("&nbsp;" + possible.join("    "));
+				$("html, body").animate({ scrollTop: $(document).height() }, "slow");
+				$("#input").focus();
+			} else if (possible.length) {
+				//append to the end
+				current += possible[0].substr(last.length);
+				input.html(current);
+				placeCaretAtEnd(input[0]);
+			}
+
+			function check(list) {
+				for (var cmd in list) {
+					if (cmd.startsWith(last)) {
+						possible.push(cmd);
+					}
+				}
+			}
+		}
+
+		function changeInput() {
+			var input = $("#input").html(commandHistory[curCommandIndex] || "");
+			placeCaretAtEnd(input[0]);
+			event.stopPropagation();
+			event.preventDefault();
+		}
+
+		//from http://stackoverflow.com/a/4238971
+		function placeCaretAtEnd(el) {
+			el.focus();
+			if (typeof window.getSelection != "undefined"
+					&& typeof document.createRange != "undefined") {
+				var range = document.createRange();
+				range.selectNodeContents(el);
+				range.collapse(false);
+				var sel = window.getSelection();
+				sel.removeAllRanges();
+				sel.addRange(range);
+			} else if (typeof document.body.createTextRange != "undefined") {
+				var textRange = document.body.createTextRange();
+				textRange.moveToElementText(el);
+				textRange.collapse(false);
+				textRange.select();
+			}
 		}
 	});
 });
