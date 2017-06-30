@@ -136,7 +136,7 @@ $(document).ready(function() {
 			println('cd: cannot find \'' + args[1] + '\': No such file or folder');
 		}
 	};
-	commands.ls = function(args) {
+	commands.ls = commands.dir = function(args) {
 		for (var file in currentFolder.children) {
 			// &nbsp; is space
 			println("&nbsp;" + file);
