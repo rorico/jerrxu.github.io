@@ -155,6 +155,11 @@ $(document).ready(function() {
 	commands.cat = function(args) {
 		println("You're a kitty!");
 	};
+	commands.history = function(args) {
+		for (var i = 0 ; i < commandHistory.length ; i++) {
+			println("&nbsp;" + commandHistory[i]);
+		}
+	};
 
 	$("#input").keypress(function(event) {
 		var keycode = (event.keyCode ? event.keyCode : event.which);
