@@ -105,6 +105,17 @@ $(document).ready(function() {
 	var commands = {};
 	startup();
 
+	commands.clear = function(args) {
+		//removing old list of prints
+		var parent = document.getElementById("form");
+		var element = document.getElementById("list");
+		parent.removeChild(element);
+
+		//adding back original empty list
+		var freshOne = document.createElement("hi");
+		freshOne.setAttribute("id", "list");
+		parent.insertBefore(freshOne, parent.firstChild);
+	}
 	commands.help = function(args) {
 		printHelp();
 	};
