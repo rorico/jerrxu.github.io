@@ -147,7 +147,7 @@ $(document).ready(function() {
 			println('cd: cannot find \'' + args[1] + '\': No such file or folder');
 		}
 	};
-	commands.ls = function(args) {
+	commands.ls = commands.dir = function(args) {
 		for (var file in currentFolder.children) {
 			// &nbsp; is space
 			println("&nbsp;" + file);
@@ -165,6 +165,11 @@ $(document).ready(function() {
 	};
 	commands.cat = function(args) {
 		println("You're a kitty!");
+	};
+	commands.history = function(args) {
+		for (var i = 0 ; i < commandHistory.length ; i++) {
+			println("&nbsp;" + commandHistory[i]);
+		}
 	};
 
 	$("#input").keypress(function(event) {
