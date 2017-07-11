@@ -20,19 +20,6 @@ $(document).ready(function() {
 		count();
 		setInterval(count,1000);
 		$("#input").focus();
-
-		new File("resume", currentFolder, function() {
-			println("Click <a href='resume.pdf'>here</a> to see my resume.");
-			$("#list").append(
-				"<div style='width:100%;height:300px;text-align:center'>" +
-				"    <object style='width:70%;height:100%;text-align:center' data='resume.pdf' type='application/pdf'>" +
-				"        <p>" +
-				"        You don't seem to have a pdf viewer plugin for this browser. Click <a href='resume.pdf'>here</a> to download." +
-				"        </p>" +
-				"    </object>" +
-				"</div>"
-			);
-		});
 	}
 
 	function count() {
@@ -97,61 +84,64 @@ $(document).ready(function() {
 		print(str + "<br>")
 	}
 
+	function askServer(args,callback) {
+		var params = {
+			args:args.join(","),
+			folder:currentFolder.fullPath
+		}
+		$.ajax({
+			url:"/command/?" + $.param(params),
+			success:function(data) {
+				if (typeof data === "object") {
+					//TODO this is a hack, change later
+					currentFolder = new Folder(data.fullPath.substr(1));
+					for (var i = 0 ; i < data.children.length ; i++) {
+						addFile(data.children[i]);
+					}
+					callback && callback();
+				} else {
+					println(data);
+				}
+				function addFile(name) {
+					new File(name,currentFolder,function() {
+						askServer([name]);
+					});
+				}
+			}
+		})
+	}
+
 	var fileRoot = new Folder("jerrxu");
 	var commandHistory = [];
 	var curCommandIndex = 0;
 
 	var currentFolder = fileRoot;
 	var commands = {};
+	askServer(["ls"]);
 	startup();
 
 	commands.clear = function(args) {
-		//removing old list of prints
-		var parent = document.getElementById("form");
-		var element = document.getElementById("list");
-		parent.removeChild(element);
-
-		//adding back original empty list
-		var freshOne = document.createElement("hi");
-		freshOne.setAttribute("id", "list");
-		parent.insertBefore(freshOne, parent.firstChild);
+		$("#list").empty();
 	}
 	commands.help = function(args) {
 		printHelp();
 	};
 	commands.mkdir = function(args) {
-		if (args[1] == ".." || args[1] == ".") {
-			println("mkdir: cannot create folder \'' + args[1] + '\': File exists'");
-		}
-		new Folder(args[1], currentFolder);
+		askServer(args);
 	};
 	commands.rm = function(args) {
-		var entry = currentFolder.children[args[1]];
-		if (entry) {
-			delete currentFolder.children[args[1]];
-		} else {
-			println('rm: cannot remove \'' + args[1] + '\': No such file or folder');
-		}
+		askServer(args);
 	}
 	commands.cd = function(args) {
-		if (args[1] == "..") {
-			if (currentFolder.parent) {
-				currentFolder = currentFolder.parent;
-			}
-			return;
-		}
-		var folder = currentFolder.children[args[1]];
-		if (folder) {
-			currentFolder = folder;
-		} else {
-			println('cd: cannot find \'' + args[1] + '\': No such file or folder');
-		}
+		askServer(args);
 	};
 	commands.ls = commands.dir = function(args) {
-		for (var file in currentFolder.children) {
-			// &nbsp; is space
-			println("&nbsp;" + file);
-		}
+		askServer(args,function() {
+			for (var file in currentFolder.children) {
+				// &nbsp; is space
+				println("&nbsp;" + file);
+			}
+		});
 	};
 	commands.pwd = function(args) {
 		println(currentFolder.fullPath);
