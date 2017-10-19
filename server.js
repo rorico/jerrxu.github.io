@@ -37,7 +37,6 @@ app.use("/command",function(req,res,next) {
     var command = commands[args[0]];
     if (command) {
         var end = command(args,folder);
-        console.log(end===fileRoot)
         if (typeof end === "object") {
             //only send file names
             var children = [];
