@@ -52,7 +52,7 @@ app.use("/command",function(req,res,next) {
         }
     } else {
         var file = handlePath(args[0],folder || {});
-        res.json(file ? file.exec : "Unrecognized command. Type 'help' for assistance.");
+        res.json(file ? file.exec() : "Unrecognized command. Type 'help' for assistance.");
     }
 });
 app.use(express.static("./"));

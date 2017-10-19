@@ -26,7 +26,6 @@ function File(name, parent, exec) {
 }
 
 function handlePath(path,startFolder) {
-    console.log(path,startFolder);
     if (path.startsWith("/") || path.startsWith("\\")) {
         startFolder = fileRoot;
     }
