@@ -1,6 +1,7 @@
 exports.Folder = Folder;
 exports.File = File;
 exports.handlePath = handlePath;
+var fileRoot = exports.fileRoot = new Folder("");
 
 function Folder(name, parent) {
     File.call(this, name, parent, function() {
@@ -15,7 +16,7 @@ function File(name, parent, exec) {
     this.parent = parent;
     if (parent) {
         parent.children[name] = this;
-        this.fullPath = parent.fullPath + "/" + name;
+        this.fullPath = (parent.name ? parent.fullPath : "") + "/" + name;
     } else {
         this.fullPath = "/" + name;
     }
@@ -25,9 +26,15 @@ function File(name, parent, exec) {
 }
 
 function handlePath(path,startFolder) {
-    //not a global command
+    console.log(path,startFolder);
+    if (path.startsWith("/") || path.startsWith("\\")) {
+        startFolder = fileRoot;
+    }
+    //trim side slashes
+    path = path.replace(/^[\/\\]|[\/\\]$/g,"");
+
     //get path, split into parts
-    var parts = path.split(/[\/\\]/g);
+    var parts = path ? path.split(/[\/\\]/g) : [];
     var folder = startFolder;
     var good = true;
     for (var i = 0 ; i < parts.length; i++) {
