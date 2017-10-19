@@ -4,6 +4,11 @@ const url = require("url");
 const fs = require("fs");
 const path = require("path");
 const express = require("express");
+const commands = require("./commands");
+const fileSystem = require("./files");
+const File = fileSystem.File;
+const Folder = fileSystem.Folder;
+const handlePath = fileSystem.handlePath;
 var app = express();
 
 var port = process.env.PORT || 8081,
@@ -20,41 +25,6 @@ new File("resume", fileRoot, function() {
         "    </object>" +
         "</div>";
 });
-var commands = {};
-commands.mkdir = function(args,currentFolder) {
-    if (args[1] == ".." || args[1] == ".") {
-        return "mkdir: cannot create folder \'' + args[1] + '\': File exists'";
-    }
-    new Folder(args[1], currentFolder);
-    return currentFolder;
-};
-commands.rm = function(args,currentFolder) {
-    var entry = currentFolder.children[args[1]];
-    if (entry) {
-        delete currentFolder.children[args[1]];
-        return currentFolder;
-    } else {
-        return 'rm: cannot remove \'' + args[1] + '\': No such file or folder';
-    }
-}
-commands.cd = function(args,currentFolder) {
-    if (args[1] == "..") {
-        if (currentFolder.parent) {
-            currentFolder = currentFolder.parent;
-        }
-        return currentFolder;
-    }
-    var folder = currentFolder.children[args[1]];
-    if (folder) {
-        currentFolder = folder;
-        return currentFolder;
-    } else {
-        return 'cd: cannot find \'' + args[1] + '\': No such file or folder';
-    }
-};
-commands.ls = function(args,currentFolder) {
-    return currentFolder;
-};
 
 app.use("/command",function(req,res,next) {
     var svrUrl = url.parse(req.url);
@@ -95,57 +65,10 @@ app.use("/command",function(req,res,next) {
             res.json(end);
         }
     } else {
-        //not a global command
-        //get path, split into parts
-        var parts = args[0].split(/[\/\\]/g);
-        var folder = currentFolder;
-        var good = true;
-        for (var i = 0 ; i < parts.length - 1; i++) {
-            var name = parts[i];
-            if (folder.children[name]) {
-                folder = folder.children[name];
-            } else {
-                good = false;
-                break;
-            }
-        }
-        if (good) {
-            var file = parts[parts.length - 1];
-            var f = folder.children[file];
-            if (f) {
-                if (typeof f.exec === "function") {
-                    res.json(f.exec());
-                }
-                //donno what default should be
-            } else {
-                res.json("Unrecognized command. Type 'help' for assistance.");
-            }
-        } else {
-            res.json("No folder " + name);
-        }
+        var file = handlePath(args[0],currentFolder || {});
+        res.json(file ? file.exec : "Unrecognized command. Type 'help' for assistance.");
     }
 });
 app.use(express.static("./"));
 
 app.listen(port);
-
-
-function Folder(name, parent) {
-    File.call(this, name, parent, function() {
-        println(name + " is a folder");
-    });
-    this.children = {};
-}
-Folder.prototype = new File();
-
-function File(name, parent, exec) {
-    this.name = name;
-    this.parent = parent;
-    if (parent) {
-        parent.children[name] = this;
-        this.fullPath = parent.fullPath + "/" + name;
-    } else {
-        this.fullPath = "/" + name;
-    }
-    this.exec = exec;
-}
