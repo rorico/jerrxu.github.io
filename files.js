@@ -1,7 +1,27 @@
-exports.Folder = Folder;
-exports.File = File;
-exports.handlePath = handlePath;
-var fileRoot = exports.fileRoot = new Folder("");
+var fileRoot = new Folder("");
+var home = new Folder("jerrxu",fileRoot);
+new File("resume", home, function() {
+    return "Click <a href='resume.pdf'>here</a> to see my resume.<br>" + 
+        "<div style='width:100%;height:300px;text-align:center'>" +
+        "    <object style='width:70%;height:100%;text-align:center' data='resume.pdf' type='application/pdf'>" +
+        "        <p>" +
+        "        You don't seem to have a pdf viewer plugin for this browser. Click <a href='resume.pdf'>here</a> to download." +
+        "        </p>" +
+        "    </object>" +
+        "</div>";
+});
+
+if (inBack()) {
+    exports.Folder = Folder;
+    exports.File = File;
+    exports.handlePath = handlePath;
+    exports.fileRoot = fileRoot;
+    exports.home = home;
+}
+
+function inBack() {
+    return typeof module === "object" && module && typeof module.exports === "object";
+}
 
 function Folder(name, parent) {
     File.call(this, name, parent, function() {

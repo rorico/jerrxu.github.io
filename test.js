@@ -57,25 +57,6 @@ $(document).ready(function() {
 		}
 	}
 
-	function Folder(name, parent) {
-		File.call(this, name, parent, function() {
-			println(name + " is a folder");
-		});
-		this.children = {};
-	}
-	Folder.prototype = new File();
-
-	function File(name, parent, exec) {
-		this.name = name;
-		this.parent = parent;
-		if (parent) {
-			parent.children[name] = this;
-			this.fullPath = parent.fullPath + "/" + name;
-		} else {
-			this.fullPath = "/" + name;
-		}
-		this.exec = exec;
-	}
 	function print(str) {
 		$("#list").append(str);
 	}
@@ -111,11 +92,10 @@ $(document).ready(function() {
 		})
 	}
 
-	var fileRoot = new Folder("jerrxu");
+	var currentFolder = home;
+
 	var commandHistory = [];
 	var curCommandIndex = 0;
-
-	var currentFolder = fileRoot;
 	var commands = {};
 	askServer(["ls"]);
 	startup();
