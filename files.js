@@ -26,14 +26,16 @@ function File(name, parent, exec) {
 }
 
 function handlePath(path,startFolder) {
-    if (path.startsWith("/") || path.startsWith("\\")) {
+    //handle both types of slashes
+    path = path.replace(/\\/g,"/");
+    if (path.startsWith("/")) {
         startFolder = fileRoot;
     }
     //trim side slashes
-    path = path.replace(/^[\/\\]|[\/\\]$/g,"");
+    path = path.replace(/^\/|\/$/g,"");
 
     //get path, split into parts
-    var parts = path ? path.split(/[\/\\]/g) : [];
+    var parts = path ? path.split("/") : [];
     var folder = startFolder;
     var good = true;
     for (var i = 0 ; i < parts.length; i++) {
