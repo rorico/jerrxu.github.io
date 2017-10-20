@@ -22,12 +22,12 @@ $(document).ready(function() {
 		$("#input").focus();
 
 		new File("resume", currentFolder, function() {
-			println("Click <a href='resume.pdf'>here</a> to see my resume.");
+			println("Click <a href='assets/resume.pdf'>here</a> to see my resume.");
 			$("#list").append(
 				"<div style='width:100%;height:300px;text-align:center'>" +
-				"    <object style='width:70%;height:100%;text-align:center' data='resume.pdf' type='application/pdf'>" +
+				"    <object style='width:70%;height:100%;text-align:center' data='assets/resume.pdf' type='application/pdf'>" +
 				"        <p>" +
-				"        You don't seem to have a pdf viewer plugin for this browser. Click <a href='resume.pdf'>here</a> to download." +
+				"        You don't seem to have a pdf viewer plugin for this browser. Click <a href='assets/resume.pdf'>here</a> to download." +
 				"        </p>" +
 				"    </object>" +
 				"</div>"

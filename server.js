@@ -4,8 +4,8 @@ const url = require("url");
 const fs = require("fs");
 const path = require("path");
 const express = require("express");
-const commands = require("./commands");
-const fileSystem = require("./files");
+const commands = require("./server/commands");
+const fileSystem = require("./server/files");
 const File = fileSystem.File;
 const Folder = fileSystem.Folder;
 const handlePath = fileSystem.handlePath;
@@ -43,6 +43,9 @@ app.use("/command",function(req,res,next) {
         res.json(file ? file.exec() : "Unrecognized command. Type 'help' for assistance.");
     }
 });
-app.use(express.static("./"));
-
-app.listen(port);
+app.use("/assets",express.static("./assets"));
+app.use("/css",express.static("./css"));
+app.use("/fonts",express.static("./fonts"));
+app.use(express.static("./server"));
+console.log(__dirname)
+app.listen(port, function() {console.log("started on " + ip + ":" + port)});
