@@ -1,8 +1,5 @@
-const http = require("http");
 const qs = require("querystring");
 const url = require("url");
-const fs = require("fs");
-const path = require("path");
 const express = require("express");
 const commands = require("./server/commands");
 const fileSystem = require("./server/files");
@@ -47,5 +44,5 @@ app.use("/assets",express.static("./assets"));
 app.use("/css",express.static("./css"));
 app.use("/fonts",express.static("./fonts"));
 app.use(express.static("./server"));
-console.log(__dirname)
+
 app.listen(port, function() {console.log("started on " + ip + ":" + port)});
