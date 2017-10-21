@@ -60,15 +60,19 @@ function handlePath(path,startFolder) {
     //get path, split into parts
     var parts = path ? path.split("/") : [];
     var folder = startFolder;
-    var good = true;
     for (var i = 0 ; i < parts.length; i++) {
+        if (!(folder instanceof Folder)) {
+            return undefined;
+        }
         var name = parts[i];
-        if (folder.children[name]) {
-            folder = folder.children[name];
+        if (name === "..") {
+            folder = folder.parent;
+        } else if (name === ".") {
+            //stay the same
         } else {
-            good = false;
-            break;
+            folder = folder.children[name];
         }
     }
-    return good ? folder : null;
+    // this can be a file
+    return folder;
 }
