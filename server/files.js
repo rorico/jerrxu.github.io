@@ -1,3 +1,28 @@
+class File {
+    constructor(name, parent, exec) {
+        this.name = name;
+        this.parent = parent;
+        if (parent) {
+            parent.children[name] = this;
+            this.fullPath = (parent.name ? parent.fullPath : "") + "/" + name;
+        } else {
+            this.fullPath = "/" + name;
+        }
+        this.exec = exec || function() {
+            println(name + " is a file");
+        };
+    }
+}
+
+class Folder extends File {
+    constructor(name, parent) {
+        super(name, parent, function() {
+            println(name + " is a folder");
+        });
+        this.children = {};
+    }
+}
+
 var fileRoot = new Folder("");
 var home = new Folder("jerrxu",fileRoot);
 new File("resume", home, function() {
@@ -21,28 +46,6 @@ if (inBack()) {
 
 function inBack() {
     return typeof module === "object" && module && typeof module.exports === "object";
-}
-
-function Folder(name, parent) {
-    File.call(this, name, parent, function() {
-        println(name + " is a folder");
-    });
-    this.children = {};
-}
-Folder.prototype = new File();
-
-function File(name, parent, exec) {
-    this.name = name;
-    this.parent = parent;
-    if (parent) {
-        parent.children[name] = this;
-        this.fullPath = (parent.name ? parent.fullPath : "") + "/" + name;
-    } else {
-        this.fullPath = "/" + name;
-    }
-    this.exec = exec || function() {
-        println(name + " is a file");
-    };
 }
 
 function handlePath(path,startFolder) {
