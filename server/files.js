@@ -35,6 +35,19 @@ new File("resume", home, function() {
         "    </object>" +
         "</div>";
 });
+new File("github", home, function() {
+    return {
+        type: "link",
+        data: "https://github.com/jerrxu"
+    };
+});
+var rorico = new Folder("rorico",fileRoot);
+new File("github", rorico, function() {
+    return {
+        type: "link",
+        data: "https://github.com/rorico"
+    };
+});
 
 if (inBack()) {
     exports.Folder = Folder;
