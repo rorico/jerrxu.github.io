@@ -26,11 +26,17 @@ app.use("/command",function(req,res,next) {
             //only send file names
             var children = [];
             for (var child in end.children) {
-                children.push(child);
+                children.push({
+                    type: end.children[child] instanceof Folder ? "folder" : "file",
+                    name: child
+                });
             }
             res.json({
-                fullPath: end.fullPath,
-                children: children
+                type: "folder",
+                data: {
+                    fullPath: end.fullPath,
+                    children: children
+                }
             });
         } else {
             res.json(end);

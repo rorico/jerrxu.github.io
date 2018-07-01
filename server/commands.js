@@ -21,19 +21,7 @@ commands.rm = function(args,currentFolder) {
     }
 }
 commands.cd = function(args,currentFolder) {
-    if (args[1] == "..") {
-        if (currentFolder.parent) {
-            currentFolder = currentFolder.parent;
-        }
-        return currentFolder;
-    }
-    var folder = currentFolder.children[args[1]];
-    if (folder) {
-        currentFolder = folder;
-        return currentFolder;
-    } else {
-        return 'cd: cannot find \'' + args[1] + '\': No such file or folder';
-    }
+    return handlePath(args[1], currentFolder) || 'cd: cannot find \'' + args[1] + '\': No such file or folder';
 };
 commands.ls = function(args,currentFolder) {
     return currentFolder;

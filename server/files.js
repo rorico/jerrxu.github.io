@@ -75,7 +75,7 @@ function handlePath(path,startFolder) {
     var folder = startFolder;
     for (var i = 0 ; i < parts.length; i++) {
         if (!(folder instanceof Folder)) {
-            return undefined;
+            return null;
         }
         var name = parts[i];
         if (name === "..") {
@@ -87,5 +87,38 @@ function handlePath(path,startFolder) {
         }
     }
     // this can be a file
+    return folder;
+}
+
+function createFolders(path, startFolder) {
+    //handle both types of slashes
+    path = path.replace(/\\/g,"/");
+    if (path.startsWith("/")) {
+        console.log("Test")
+        startFolder = fileRoot;
+    }
+    //trim side slashes
+    path = path.replace(/^\/|\/$/g,"");
+
+    //get path, split into parts
+    var parts = path ? path.split("/") : [];
+    var folder = startFolder;
+    for (var i = 0 ; i < parts.length; i++) {
+        console.log(folder)
+        if (!(folder instanceof Folder)) {
+            return null;
+        }
+        var name = parts[i];
+        if (name === "..") {
+            folder = folder.parent;
+        } else if (name === ".") {
+            //stay the same
+        } else {
+            if (!folder.children[name]) {
+                folder.children[name] = new Folder(name,folder);
+            }
+            folder = folder.children[name];
+        }
+    }
     return folder;
 }

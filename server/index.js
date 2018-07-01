@@ -72,20 +72,30 @@ $(document).ready(function() {
 		}
 		$.ajax({
 			url:"/command/?" + $.param(params),
-			success:function(data) {
-				if (typeof data === "object") {
-					//TODO this is a hack, change later
-					currentFolder = new Folder(data.fullPath.substr(1));
-					for (var i = 0 ; i < data.children.length ; i++) {
-						addFile(data.children[i]);
+			success:function(result) {
+				if (typeof result === "object") {
+					if (result.type === "link") {
+						println("<a href='" + result.data + "' target='_blank'>" + result.data + "</a>");
+						window.open(result.data);
+					} else if (result.type === "folder") {
+						var data = result.data;
+						var folder = createFolders(data.fullPath);
+						data.children.forEach((c) => {
+							if (c.type === "folder") {
+								new Folder(c.name,folder);
+							} else {
+								addFile(c.name,folder);
+							}
+						});
+						callback && callback(folder);
 					}
-					callback && callback();
 				} else {
-					println(data);
+					println(result);
 				}
-				function addFile(name) {
-					new File(name,currentFolder,function() {
-						askServer([name]);
+				function addFile(name, folder) {
+					new File(name,folder,function() {
+						// could optimize
+						askServer([folder.fullPath + "/" + name]);
 					});
 				}
 			}
@@ -113,11 +123,13 @@ $(document).ready(function() {
 		askServer(args);
 	}
 	commands.cd = function(args) {
-		askServer(args);
+		askServer(args, (folder) => {
+			currentFolder = folder;
+		});
 	};
 	commands.ls = commands.dir = function(args) {
-		askServer(args,function() {
-			for (var file in currentFolder.children) {
+		askServer(args,function(folder) {
+			for (var file in folder.children) {
 				// &nbsp; is space
 				println("&nbsp;" + file);
 			}
