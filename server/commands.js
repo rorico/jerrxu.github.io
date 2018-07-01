@@ -5,8 +5,9 @@ const handlePath = fileSystem.handlePath;
 
 var commands = module.exports = {};
 commands.mkdir = function(args,currentFolder) {
-    if (args[1] == ".." || args[1] == ".") {
-        return "mkdir: cannot create folder \'' + args[1] + '\': File exists'";
+    var name = args[1];
+    if (name == ".." || name == "." || currentFolder.children[name]) {
+        return "mkdir: cannot create folder '" + name + "': File exists";
     }
     new Folder(args[1], currentFolder);
     return currentFolder;
