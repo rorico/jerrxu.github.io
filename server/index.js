@@ -122,6 +122,9 @@ $(document).ready(function() {
 	commands.rm = function(args) {
 		askServer(args);
 	}
+	commands.touch = function(args) {
+		askServer(args);
+	}
 	commands.cd = function(args) {
 		askServer(args, (folder) => {
 			currentFolder = folder;

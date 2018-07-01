@@ -13,17 +13,25 @@ commands.mkdir = function(args,currentFolder) {
     return currentFolder;
 };
 commands.rm = function(args,currentFolder) {
-    var entry = currentFolder.children[args[1]];
+    var name = args[1];
+    var entry = currentFolder.children[name];
     if (entry) {
-        delete currentFolder.children[args[1]];
+        delete currentFolder.children[name];
         return currentFolder;
     } else {
-        return 'rm: cannot remove \'' + args[1] + '\': No such file or folder';
+        return 'rm: cannot remove \'' + name + '\': No such file or folder';
     }
 }
 commands.cd = function(args,currentFolder) {
     return handlePath(args[1], currentFolder) || 'cd: cannot find \'' + args[1] + '\': No such file or folder';
 };
 commands.ls = function(args,currentFolder) {
+    return currentFolder;
+};
+commands.touch = function(args,currentFolder) {
+    var name = args[1];
+    if (!currentFolder.children[name]) {
+        new File(name,currentFolder);
+    }
     return currentFolder;
 };
