@@ -94,7 +94,6 @@ function createFolders(path, startFolder) {
     //handle both types of slashes
     path = path.replace(/\\/g,"/");
     if (path.startsWith("/")) {
-        console.log("Test")
         startFolder = fileRoot;
     }
     //trim side slashes
@@ -104,7 +103,6 @@ function createFolders(path, startFolder) {
     var parts = path ? path.split("/") : [];
     var folder = startFolder;
     for (var i = 0 ; i < parts.length; i++) {
-        console.log(folder)
         if (!(folder instanceof Folder)) {
             return null;
         }
